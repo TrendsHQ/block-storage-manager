@@ -1,7 +1,7 @@
 {
-  "name": "@zlogjs/lvm",
+  "name": "block-storae-manager",
   "version": "0.0.0",
-  "description": "lvm manager for linux os",
+  "description": "virtual storage manager for linux os, add extend virtual storages and even assign storages to the applications",
   "main": "index.js",
   "scripts": {
     "lint": "eslint ./es6",
