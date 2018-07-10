@@ -4,28 +4,22 @@
   "description": "virtual storage manager for linux os, add extend virtual storages and even assign storages to the applications",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint ./es6",
+    "lint": "eslint ./src",
     "clean": "node ./scripts/clean",
     "serve:docs": "live-server ./docs",
     "preserve:docs": "npm run build:docs",
     "prebuild": "npm run clean",
-    "build": "babel es6 --out-dir build",
+    "build": "babel src --out-dir build",
     "test": "mocha --compilers js:babel-core/register ./test/index.js",
     "build:docs": "node_modules/.bin/jsdoc --configure ./jsdoc/.jsdoc.json --verbose",
     "lint:w": "nodemon --exec \"clear & npm run lint\"",
     "test:w": "nodemon --exec \"clear & npm run test\"",
     "test:dev": "nodemon --exec \"clear & node test/manual\"",
     "build:w": "nodemon --ignore build --exec \"clear & npm run build\"",
-    "build:docs:w": "nodemon --ignore docs --watch es6 --exec npm run build:docs"
-  },
-  "commands": {
-    "scope-bind": "npm config set @myScope:registry http://192.168.0.4:2222"
+    "build:docs:w": "nodemon --ignore docs --watch src --exec npm run build:docs"
   },
   "keywords": [],
-  "author": "emallates(support@emallates.com)",
-  "publishConfig": {
-    "registry": "http://192.168.0.4:2222"
-  },
+  "author": "zeeshan.emallates@gmail.com",
   "editor": "subl.exe",
   "license": "MIT",
   "devDependencies": {
@@ -33,7 +27,7 @@
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-regenerator": "^6.22.0",
     "babel-polyfill": "^6.23.0",
-    "babel-preset-es2015": "^6.24.0",
+    "babel-preset-es2015": "^6.24.1",
     "emallates-documentation-template": "0.0.2",
     "eslint": "^3.19.0",
     "eslint-config-airbnb-base": "^11.1.3",
@@ -43,7 +37,10 @@
     "should": "^11.1.1"
   },
   "dependencies": {
+    "aws-s3": "^1.5.0",
+    "node-rdp": "^1.0.1",
+    "rxjs": "*",
     "shelljs": "*",
-    "rxjs": "*"
+    "ssh2": "^0.6.1"
   }
 }
