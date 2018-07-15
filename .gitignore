@@ -1,4 +1,5 @@
 node_modules
 dist
-test
 package-lock.json
+test/manual/index.js
+test/prototype.js

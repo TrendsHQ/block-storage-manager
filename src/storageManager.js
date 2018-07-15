@@ -1,6 +1,5 @@
-import lvm from './lib/lvm';
-import linux from './lib/linux';
-
+import { lvm, linux, flags } from './lib';
+import { of } from 'rxjs-compat';
 /*
  @opts.plugins: s3|ceph|linux|windows
 */
@@ -13,13 +12,45 @@ class storageManager extends lvm {
       }
       /*else*/
 	}
+	/* Linear, Striped, mirrored(lvms) */
 	Create(object, opts) {
-	  const self = this;
-	  const args = opts.flag == 'pv' ? ['create', object.device] 
-	  : opts.flag == 'vg' ?  ['create', object.device, object.vg_name] 
-	  : opts.flag == 'lv' ? ['create',  object.vg_name, object.lv_name, object.rootDir, object.size] : [];	
-
-	  return this.shell.onRead(`${this[opts.flag].apply(this, args)}`)
+	  const args = flags.apply(this, ['create', object, opts]);
+    
+	  return this.EXEC(`${this[opts.flag].apply(this, args)}`)
+	}
+    Update(object, opts, Callback) {
+		// Not Implemented
+		const args = flags.apply(this, [object.size && !opts.action ? null : opts.action , object, opts]);
+		
+		return this.EXEC(`${this[opts.flag].apply(this, args)}`, Callback)
+	}
+	Remove(object, opts, Callback) {
+		const args = flags.apply(this, ['remove', object, opts]);
+        
+		return this.EXEC(`${this[opts.flag].apply(this, args)}`, Callback);
+	}
+	Snapshot(object, opts, Callback) {
+		object.new_name = this.generateName();
+		const args = flags.apply(this, ['snapshot', object, opts]);
+        
+		return this.EXEC(`${this[opts.flag].apply(this, args)}`, Callback);
+	}
+	EXEC(command, Callback) {
+		let val;
+		return !Callback ? this.shell.onRead(command)
+		: this.shell.onRead(command).subscribe(
+			x => !x ? Callback(null, 0) : Callback(null,x),
+			e => Callback(e),
+			() => Callback(null, val)
+		);
+	}
+	Move() {
+		// Not Implemented
+		return of('Not Implemented')
+	}
+	Read() {
+		// Not Implemented
+		return of('Not Implemented');
 	}
 }
 

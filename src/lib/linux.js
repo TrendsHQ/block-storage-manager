@@ -1,7 +1,6 @@
 import ssh from 'ssh2';
 import shell from 'shelljs';
-import { Observable, Subject, ReplaySubject, from, of, range } from 'rxjs';
-import { map, filter, switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs-compat';
 
 class Linux /*extends Client*/ {
 	constructor(opts){
@@ -10,7 +9,7 @@ class Linux /*extends Client*/ {
 	  this.Client = shell;
 	  if(!opts.local) {
         this.Client = new ssh()
-        this.getConnection()
+        // this.getConnection()
       }	
 	}
 	getConnection() {
@@ -18,9 +17,10 @@ class Linux /*extends Client*/ {
 		return this.Client.on;
 	}
 	onRead(_commands) {
-		console.log('call');
+		
 		const self = this;
 		return Observable.create((observer) => {
+			self.getConnection();
 			self.Client.on('ready', function() {
 			  // console.log('Client :: ready');
 			  self.Client.exec(`sudo ${_commands}`, {pty:true}, function(err, stream) {
@@ -28,18 +28,21 @@ class Linux /*extends Client*/ {
 			   
 			    stream.on('close',function(code, signal) {
 			      // console.log('Stream :: close :: code: ' + code + ', signal: ' + signal);
-			      self.Client.end();
-			      observer.complete();
+						self.Client.end();
+						observer.complete();
 			    })
 			    stream.on('data', function(data) {
 			      observer.next(data);
 			      // console.log('STDOUT: ' + data);
 			    });
-			    stream.write('node3' + '\n');
+					stream.write(self.creds.username + '\n');
 			    // stream.end('exit');
 			  });
 			})
 	    });
+	}
+	Construct() {
+		return Observable.create()
 	}
 }
 
